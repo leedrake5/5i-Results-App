@@ -6,7 +6,10 @@ library(ggtern)
 library(ggplot2)
 library(shiny)
 
-
+dateSubset <- function(datemin,datemax, dataframe, datevector){
+    dataframe[as.Date(dataframe[,datevector], format="%m-%d-%Y", na.rm=TRUE) >= as.Date(datemin, format="%m-%d-%Y", na.rm=TRUE) &
+    as.Date(dataframe[,datevector], format="%m-%d-%Y", na.rm=TRUE) <= as.Date(datemax, format="%m-%d-%Y", na.rm=TRUE),]
+}
 
 extract.with.context <- function(x, rows, after = 0, before = 0) {
     
@@ -2044,9 +2047,9 @@ standard <- c("Spectrum", "Ca.K.alpha", "Ti.K.alpha", "Fe.K.alpha", "Cu.K.alpha"
 
 #####Testing Code
 
-no_col <- max(count.fields(file="/Users/lee/Desktop/Results.csv", sep=","))
+no_col <- max(count.fields(file="/Users/lee/GitHub/5i Results App/data/Results.csv", sep=","))
 
-data.frame.first <- read.table("/Users/lee/Desktop/Results.csv",sep=",", fill=TRUE, col.names=1:no_col)
+data.frame.first <- read.table("/Users/lee/GitHub/5i Results App/data/Results.csv",sep=",", fill=TRUE, col.names=1:no_col)
 #data.frame <- read.csv("data/ceramics.csv", sep=",")
 
 names <- c("File", "DateTime", "Operator", "Name", "ID", "Field1", "Field2", "Application", "Method", "ElapsedTime", "Alloy 1", "Match Qual 1", "Alloy 2", "Match Qual 2", "Alloy 3", "Match Qual 3", "Cal Check")

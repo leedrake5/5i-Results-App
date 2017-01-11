@@ -170,7 +170,7 @@ output$inApp <- renderUI({
 
 output$inDateMin <- renderUI({
     
-    dateInput('datemin', label=h6("Date Min"),  value=outDateMin(),  width='40%', format="dd-mm-yyyy")
+    dateInput('datemin', label=h6("Date Min"),  value=outDateMin(),  width='40%', format="mm-dd-yyyy")
     
 })
 
@@ -178,7 +178,7 @@ output$inDateMin <- renderUI({
 
 output$inDateMax <- renderUI({
     
-    dateInput('datemax', label=h6("Date Max"),  value=outDateMax(),  width='40%', format="dd-mm-yyyy")
+    dateInput('datemax', label=h6("Date Max"),  value=outDateMax(),  width='40%', format="mm-dd-yyyy")
     
 })
 
@@ -201,6 +201,8 @@ output$inField2 <- renderUI({
 
 output$metadataTable <- renderTable({
     data.m <- metadataTableRe()
+    
+    data.m <- subset(data.m, !(Date=="DateTime"))
     
     
     
@@ -235,21 +237,18 @@ output$metadataTable <- renderTable({
     
     #colnames(data.m) <-
     
-    datemin <- as.Date(input$datemin)
-    datemax <- as.Date(input$datemax)
-    
-    date.seq <- 
-    
-    data.m <- subset(data.m, data.m$DateTime =< datemin)
+   
+
+    data.n <- dateSubset(datemin=input$datemin, datemax=input$datemax, dataframe=data.m, datevector="Date")
  
 
-
-
-    data.m
+    data.n
 })
 
 output$fullTable <- renderTable({
     data.m <- metadataTableRe()
+    data.m <- subset(data.m, !(Date=="DateTime"))
+
     data.m
 })
 
