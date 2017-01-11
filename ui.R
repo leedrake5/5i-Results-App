@@ -4,7 +4,7 @@ library(DT)
 
 
 # Define UI for application that draws a histogram
-shinyUI(navbarPage("AES", id="nav",
+shinyUI(navbarPage("Data Selecter", id="nav",
 tabPanel("Load Data",
 titlePanel("Uploading Files"),
 sidebarLayout(
@@ -29,7 +29,9 @@ tags$hr(),
 uiOutput('inField1'),
 
 
-uiOutput('inField2')
+uiOutput('inField2'),
+
+downloadButton(outputId="downloadtable", label="Download")
 
 ),
 mainPanel(
@@ -41,35 +43,7 @@ tableOutput('fullTable'))
 )
 )
 )
-),
-
-tabPanel("Source",
-titlePanel("Run Models"),
-sidebarLayout(
-sidebarPanel(
-
-fileInput('loadspectra', 'Load Spectra', multiple=TRUE,
-accept = c('.csv')
-),
-
-
-tags$hr(),
-
-actionButton('runsinglemodel', "Run Individual Model"),
-actionButton('runfullmodel', "Run Full Model")),
-
-mainPanel(
-tabsetPanel(
-tabPanel('By Artifact',
-tableOutput('singlemodelresult')),
-tabPanel('All Classes',
-tableOutput('multiplemodelresult')))
-
 )
-
-)
-)
-
 ))
 
 

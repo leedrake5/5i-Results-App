@@ -195,14 +195,10 @@ output$inField2 <- renderUI({
 
 
 
-
-
-
-
-output$metadataTable <- renderTable({
+metadataForm <- reactive({
     data.m <- metadataTableRe()
     
-    data.m <- subset(data.m, !(Date=="DateTime"))
+    data.n <- subset(data.m, !(Date=="DateTime"))
     
     
     
@@ -226,9 +222,17 @@ output$metadataTable <- renderTable({
         paste(input$field2)
     })
     
+    rownumbers <- which(data.m$Application==selection.app)
     
     
-    data.m <- subset(data.m, data.m$Application==selection.app)
+    
+    
+    data.o <- subset(data.n, data.n$Application==selection.app)
+    
+    data.t <- t(data.m)
+    
+    names <- as.vector(data.t[,print(rownumbers[1]-1)])
+    
     #file.min <- min(data.m$File)
     
     # data.m <- subset(data.m, data.m$DateTime==selection.date)
@@ -237,117 +241,45 @@ output$metadataTable <- renderTable({
     
     #colnames(data.m) <-
     
-   
+    
+    
+    data.p <- dateSubset(datemin=input$datemin, datemax=input$datemax, dataframe=data.o, datevector="Date")
+    
+    colnames(data.p) <- names
+    
+    
+    
+    
+    data.p
 
-    data.n <- dateSubset(datemin=input$datemin, datemax=input$datemax, dataframe=data.m, datevector="Date")
- 
-
-    data.n
+    
 })
+
+
+
+output$metadataTable <- renderTable({
+    
+    metadataForm()
+    
+    })
 
 output$fullTable <- renderTable({
     data.m <- metadataTableRe()
-    data.m <- subset(data.m, !(Date=="DateTime"))
+    #data.m <- subset(data.m, !(Date=="DateTime"))
 
     data.m
 })
 
-chooseSpectra <- reactive({
-    inFile <- input$loadspectra
-    if (is.null(inFile)) return(NULL)
 
-    files <- inFile$datapath
-  
-    files
-    
-})
-
+output$downloadtable <- downloadHandler(
+filename = function() { paste(input$dataset, '.csv', sep=',') },
+content = function(file
+) {
+    write.csv(metadataForm(), file)
+}
+)
 
 
-
-runModel <- reactive({
-    
-
-
-    files <- chooseSpectra()
-    
-    metadata.dat <- metadataTableRe()
-    
-    file.names <- input$filenames
-    
-    definition.values <- input$definitions
-    value <- input$definitions.vals
-
-    limit.col <- input$limits
-    limit.val <- input$limits.vals
-    
-    wavelength.seq <- seq(input$wavemin, input$wavemax, 1)
-    
-    wavemin <- input$wavemin
-    wavemax <- input$wavemax
-    
-    
-    libs.site.definitions <- define.all.sources(files=files, filenames=file.names, wavemin=wavemin, wavemax=wavemax, metadata=metadata.dat, definition=definition.values, limit.type=limit.col, limit.value=limit.val)
-    
-    libs.tests <- define.data(files=files, filenames=file.names, wavemin=wavemin, wavemax=wavemax, metadata=metadata.dat, definition=definition.values, values=value, limit.type=limit.col, limit.value=limit.val)
-    
-    individual.result <- libsJackKnifeMultipleSourceSigSilent(wavemin=wavemin, wavemax=wavemax, libs.dataframe = libs.tests, libs.source.definition = libs.site.definitions, return="t-value")
-    
-    individual.result <- as.data.frame(individual.result)
-    individual.result
-
-
-
-})
-
-
-output$singlemodelresult <- renderTable({
-
-    single.result <- runModel()
-    single.result <- as.data.frame(single.result)
-    single.result
-    
-})
-
-popSig <- reactive({
-    
-    files <- chooseSpectra()
-    
-    metadata.dat <- metadataTableRe()
-    
-    file.names <- input$filenames
-
-
-    definition.values <- input$definitions
-    value <- input$definitions.vals
-    
-    limit.col <- input$limits
-    limit.val <- input$limits.vals
-    
-    wavelength.seq <- seq(input$wavemin, input$wavemax, 1)
-    wavemin <- input$wavemin
-    wavemax <- input$wavemax
-    
-    libs.site.definitions <- define.all.sources(files=files, filenames=file.names, wavemin=wavemin, wavemax=wavemax, metadata=metadata.dat, definition=definition.values, limit.type=limit.col, limit.value=limit.val)
-
-
-    source.hypotheses <- as.vector(input$definitions)
-    
-    source.grid <- sourceGrid(files=files, filenames=file.names, metadata=metadata.dat, definition=definition.values, values=source.hypotheses, limit.type=limit.col, limit.value=limit.val, sourceDefinitions=libs.site.definitions, wavemin=wavemin, wavemax=wavemax, source.hypotheses=source.hypotheses)
-    
-    source.grid < as.data.frame(source.grid)
-    source.grid
-  
-})
-
-
-output$multiplemodelresult <- renderTable({
-    input$runfullmodel
-    multiple.result <- popSig()
-    multiple.result <- as.data.frame(multiple.result)
-    multiple.result
-    
-})
 
 
 })
