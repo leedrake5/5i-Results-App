@@ -43,6 +43,42 @@ tableOutput('fullTable'))
 )
 )
 )
+),
+
+
+tabPanel("Plot Data",
+titlePanel("Create Plots"),
+sidebarLayout(
+sidebarPanel(
+
+uiOutput('inVar'),
+
+#textInput(inputId="element", label="Element:", value="Enter element name..."),
+#textInput(inputId="factor", label="Factor:", value="Enter column name..."),
+
+
+
+downloadButton(outputId="downloadboxplot", label="Download Box Plot"),
+downloadButton(outputId="downloaddesnityplot", label="Download Density Plot"),
+downloadButton(outputId="downloadhistogram", label="Download Histogram")
+
+
+
+),
+mainPanel(
+tabsetPanel(
+tabPanel("Box Plots",
+plotOutput("boxplot")),
+
+tabPanel("Density Plots",
+plotOutput("densityplot"))
+
+))
+
+
+)
+
+
 )
 ))
 

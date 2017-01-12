@@ -279,6 +279,127 @@ content = function(file
 }
 )
 
+selectElements <- reactive({
+    
+    the.data <- metadataForm()
+    
+    the.names <- as.vector(colnames(the.data))
+    
+    element.names <- the.names[! the.names %in% c("File #", "DateTime", "DateTime.1", "Operator", "Name", "ID", "Field1", "Field2", "Application", "Method", "ElapsedTime", "Alloy 1", "Match Qual 1", "Alloy 2", "Match Qual 2", "Alloy 3", "Match Qual 3", "Cal Check", "Date", "X",  "X.1", "X.2", "X.3", "X.4", "X.5", "X.6", "X.7", "X.8", "X.9", "X.10", "X.11", "X.12", "X.13", "X.14", "X.15", "X.16", "X.17", "X.18", "X.19", "X.20", "X.21", "X.22", "X.23", "X.24", "X.25", "X.26", "X.27", "X.28", "X.29", "X.30", "X.31", "X.32", "X.33", "X.34", "X.35", "X.36", "X.37", "X.38", "X.39", "X.40", " ", "")]
+    element.names <- as.vector(element.names)
+    element.names
+    #the.names
+})
+
+
+output$inVar <- renderUI({
+    checkboxGroupInput(inputId = "elements", label = h4("Elements"), choices =  selectElements())
+})
+
+
+theBoxPlot <- reactive({
+    the.data <- metadataForm()
+    
+
+    short.frame <- the.data[c("Application", input$elements)]
+    short.melt <- melt(short.frame, id="Application")
+    
+    box.plot <- ggplot(short.melt) +
+    geom_boxplot(aes(x=as.character(variable), y=as.numeric(value), colour=as.character(variable), fill=as.character(variable)), alpha=0.5) +
+    scale_fill_discrete("Element") +
+    scale_colour_discrete("Element") +
+    scale_x_discrete("") +
+    scale_y_continuous("Concentration (%)") +
+    theme_light()
+    
+    box.plot
+    
+})
+
+
+
+output$boxplot <- renderPlot({
+    print(theBoxPlot())
+    
+})
+
+
+output$downloadboxplot <- downloadHandler(
+filename = function() { paste(input$dataset, '.png', sep='') },
+content = function(file) {
+    ggsave(file,theBoxPlot(), width=10, height=7)
+}
+)
+
+
+
+theDensityPlot <- reactive({
+    the.data <- metadataForm()
+    
+    
+    short.frame <- the.data[c("Application", input$elements)]
+    short.melt <- melt(short.frame, id="Application")
+    
+    density.plot <- ggplot(short.melt) +
+    geom_density(aes(x=as.numeric(value), colour=as.character(variable), fill=as.character(variable)), alpha=0.5) +
+    scale_fill_discrete("Element") +
+    scale_colour_discrete("Element") +
+    scale_x_discrete("") +
+    scale_y_continuous("Concentration (%)") +
+    theme_light()
+
+    density.plot
+    
+})
+
+
+
+output$densityplot <- renderPlot({
+    print(theDensityPlot())
+    
+})
+
+
+output$downloaddensityplot <- downloadHandler(
+filename = function() { paste(input$dataset, '.png', sep='') },
+content = function(file) {
+    ggsave(file,theDensityPlot(), width=10, height=7)
+}
+)
+
+
+
+
+theHistogram <- reactive({
+    the.data <- metadataForm()
+    
+    
+    short.frame <- the.data[c("Application", input$elements)]
+    short.melt <- melt(short.frame, id="Application")
+    
+    histogram.plot <- ggplot(short.melt, aes(x=as.character(variable), y=as.numeric(value))) +
+    geom_histogram() +
+    theme_light()
+    
+    histogram.plot
+    
+})
+
+
+
+output$histogramplot <- renderPlot({
+    print(theHistogram())
+    
+})
+
+
+output$downloadhistogramplot <- downloadHandler(
+filename = function() { paste(input$dataset, '.png', sep='') },
+content = function(file) {
+    ggsave(file,theHistogram(), width=10, height=7)
+}
+)
+
 
 
 

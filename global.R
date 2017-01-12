@@ -1,8 +1,6 @@
 library(pbapply)
 library(reshape2)
-library(TTR)
 library(dplyr)
-library(ggtern)
 library(ggplot2)
 library(shiny)
 
