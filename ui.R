@@ -1,6 +1,4 @@
 library(shiny)
-library(dplyr)
-library(DT)
 
 
 # Define UI for application that draws a histogram
