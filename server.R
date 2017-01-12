@@ -336,8 +336,8 @@ theDensityPlot <- reactive({
     geom_density(aes(x=as.numeric(value), colour=as.character(variable), fill=as.character(variable)), alpha=0.5) +
     scale_fill_discrete("Element") +
     scale_colour_discrete("Element") +
-    scale_x_discrete("") +
-    scale_y_continuous("Concentration (%)") +
+    scale_y_continuous("Density") +
+    scale_x_continuous("Concentration (%)") +
     theme_light()
 
     density.plot
