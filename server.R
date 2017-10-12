@@ -8,7 +8,7 @@ library(DT)
 options(warn=-1)
 assign("last.warning", NULL, envir = baseenv())
 
-#options(shiny.error = function() {stop("")})
+options(shiny.error = function() {stop("")})
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
