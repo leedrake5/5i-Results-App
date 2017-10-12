@@ -1,3 +1,8 @@
+list.of.packages <- c("pbapply", "reshape2", "dplyr", "ggplot2", "shiny",  "data.table", "DT", "shinythemes",  "gridExtra", "dtplyr", "formattable")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+
 library(pbapply)
 library(reshape2)
 library(dplyr)

@@ -5,6 +5,10 @@ library(pbapply)
 library(data.table)
 library(DT)
 
+options(warn=-1)
+assign("last.warning", NULL, envir = baseenv())
+
+#options(shiny.error = function() {stop("")})
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
@@ -148,7 +152,7 @@ outLimVal <- reactive({
 })
 
 output$inApp <- renderUI({
-    selectInput(inputId = "app", label = h4("Application"), choices =  outApp())
+    selectInput(inputId = "app", label = h4("Application"), choices =  outApp(), selected="Choose")
 })
 
 output$inDateMin <- renderUI({
@@ -168,7 +172,7 @@ output$inDateMax <- renderUI({
 
 
 output$inName <- renderUI({
-    selectInput(inputId = "name", label = h4("Name"), choices =  outName())
+    selectInput(inputId = "name", label = h4("Name"), choices =  outName(), selected="Choose")
 })
 
 
@@ -249,7 +253,7 @@ output$fullTable <- renderDataTable({
 
 
 output$downloadtable <- downloadHandler(
-filename = function() { paste(input$dataset, '.csv', sep=',') },
+filename = function() { paste(input$name, "_", input$app, ".csv", sep="") },
 content = function(file
 ) {
     write.csv(metadataForm(), file)
@@ -270,7 +274,7 @@ selectElements <- reactive({
 
 
 output$inVar <- renderUI({
-    checkboxGroupInput(inputId = "elements", label = h4("Elements"), choices =  selectElements())
+    selectInput(inputId = "elements", label = h4("Elements"), choices =  selectElements(), selected=selectElements()[1], multiple=TRUE)
 })
 
 
@@ -302,7 +306,7 @@ output$boxplot <- renderPlot({
 
 
 output$downloadboxplot <- downloadHandler(
-filename = function() { paste(input$dataset, '.png', sep='') },
+filename = function() { paste(input$name, "_", input$app, "-", "BoxPlot", ".png", sep="") },
 content = function(file) {
     ggsave(file,theBoxPlot(), width=10, height=7)
 }
@@ -338,44 +342,13 @@ output$densityplot <- renderPlot({
 
 
 output$downloaddensityplot <- downloadHandler(
-filename = function() { paste(input$dataset, '.png', sep='') },
+filename = function() { paste(input$name, "_", input$app, "-", "Density", ".png", sep="") },
 content = function(file) {
     ggsave(file,theDensityPlot(), width=10, height=7)
 }
 )
 
 
-
-
-theHistogram <- reactive({
-    the.data <- metadataForm()
-    
-    
-    short.frame <- the.data[c("Application", input$elements)]
-    short.melt <- melt(short.frame, id="Application")
-    
-    histogram.plot <- ggplot(short.melt, aes(x=as.character(variable), y=as.numeric(value))) +
-    geom_histogram() +
-    theme_light()
-    
-    histogram.plot
-    
-})
-
-
-
-output$histogramplot <- renderPlot({
-    print(theHistogram())
-    
-})
-
-
-output$downloadhistogramplot <- downloadHandler(
-filename = function() { paste(input$dataset, '.png', sep='') },
-content = function(file) {
-    ggsave(file,theHistogram(), width=10, height=7)
-}
-)
 
 
 

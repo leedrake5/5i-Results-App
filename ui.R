@@ -1,8 +1,9 @@
 library(shiny)
+library(shinythemes)
 
 
 # Define UI for application that draws a histogram
-shinyUI(navbarPage("Data Selecter", id="nav",
+shinyUI(navbarPage("Data Selecter", id="nav", theme=shinytheme("sandstone"),
 tabPanel("Load Data",
 titlePanel("Uploading Files"),
 sidebarLayout(
@@ -56,8 +57,7 @@ uiOutput('inVar'),
 
 
 downloadButton(outputId="downloadboxplot", label="Download Box Plot"),
-downloadButton(outputId="downloaddesnityplot", label="Download Density Plot"),
-downloadButton(outputId="downloadhistogram", label="Download Histogram")
+downloadButton(outputId="downloaddensityplot", label="Download Density Plot")
 
 
 
