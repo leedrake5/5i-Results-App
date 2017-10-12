@@ -24,10 +24,9 @@ uiOutput('inDateMax'),
 tags$hr(),
 
 
-uiOutput('inField1'),
+uiOutput('inName'),
 
 
-uiOutput('inField2'),
 
 downloadButton(outputId="downloadtable", label="Download")
 
@@ -35,9 +34,9 @@ downloadButton(outputId="downloadtable", label="Download")
 mainPanel(
 tabsetPanel(
 tabPanel('Table',
-tableOutput('metadataTable')),
+dataTableOutput('metadataTable')),
 tabPanel('Full Table',
-tableOutput('fullTable'))
+dataTableOutput('fullTable'))
 )
 )
 )

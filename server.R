@@ -3,7 +3,7 @@ library(ggplot2)
 library(reshape2)
 library(pbapply)
 library(data.table)
-
+library(DT)
 
 
 # Define server logic required to draw a histogram
@@ -12,6 +12,7 @@ shinyServer(function(input, output) {
     
     
 
+####Import and Format results.csv file from the Tracer 5i, stored in BRUKER folder on instrument, or on USB flash drive
 
 metadataTableRe <- reactive({
     # input$file1 will be NULL initially. After the user selects
@@ -35,7 +36,7 @@ metadataTableRe <- reactive({
     n <- length(data.frame.first[1,])
     
     
-    data.frame <- as.data.frame(data.frame.first[2:n,])
+    data.frame <- as.data.frame(data.frame.first[1:n])
     colnames(data.frame) <- names
     data.frame$Date <- substr(data.frame$DateTime, 1, 10)
     data.frame
@@ -55,7 +56,7 @@ metadataTableRe <- reactive({
 
 
 
-
+#Create Interface
 outApp <- reactive({
     metadata.dat <- metadataTableRe()
     
@@ -119,10 +120,10 @@ outDateMax <- reactive({
 })
 
 
-outField1 <- reactive({
+outName <- reactive({
     metadata.dat <- metadataTableRe()
     
-    field1 <- unique(metadata.dat$Field1)
+    field1 <- unique(metadata.dat$Name)
     field1.values <- as.vector(field1)
     field1.values <- c("Choose", field1.values)
     
@@ -132,17 +133,7 @@ outField1 <- reactive({
 })
 
 
-outField2 <- reactive({
-    metadata.dat <- metadataTableRe()
-    
-    field2 <- as.vector(metadata.dat$Field2)
-    field2.values <- as.vector(field2)
-    field2.values <- c("Choose", field2.values)
-    
-    field2.values
-    
-    
-})
+
 
 
 outLimVal <- reactive({
@@ -176,12 +167,8 @@ output$inDateMax <- renderUI({
 
 
 
-output$inField1 <- renderUI({
-    selectInput(inputId = "field1", label = h4("Field 1"), choices =  outField1())
-})
-
-output$inField2 <- renderUI({
-    selectInput(inputId = "field2", label = h4("Field 2"), choices =  outField2())
+output$inName <- renderUI({
+    selectInput(inputId = "name", label = h4("Name"), choices =  outName())
 })
 
 
@@ -202,17 +189,13 @@ metadataForm <- reactive({
     
     #selection.date <- subset(data.m, !(as.Date(data.m$Date) < as.Date(input$datemin) | as.Date(data.m$Date) > as.Date(input$datemax)))
     
-    selection.field1 <-  as.vector(if (input$field1=="Choose") {
-        paste(unique(data.m$Field1))
+    selection.name <-  as.vector(if (input$name=="Choose") {
+        paste(unique(data.m$Name))
     } else {
-        paste(input$field1)
+        paste(input$name)
     })
     
-    selection.field2 <-  as.vector(if (input$field2=="Choose") {
-        paste(all.field2 <- unique(data.m$Field2))
-    } else {
-        paste(input$field2)
-    })
+
     
     rownumbers <- which(data.m$Application==selection.app)
     
@@ -239,27 +222,29 @@ metadataForm <- reactive({
     
     colnames(data.p) <- names
     
+    data.r <- subset(data.p, data.p$Name==selection.name)
     
     
     
-    data.p
+    
+    data.r
 
     
 })
 
 
 
-output$metadataTable <- renderTable({
+output$metadataTable <- renderDataTable({
     
-    metadataForm()
+    data.table(metadataForm())
     
     })
 
-output$fullTable <- renderTable({
+output$fullTable <- renderDataTable({
     data.m <- metadataTableRe()
     #data.m <- subset(data.m, !(Date=="DateTime"))
 
-    data.m
+    data.table(data.m)
 })
 
 
