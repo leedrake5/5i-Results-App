@@ -1,5 +1,7 @@
 library(shiny)
 library(shinythemes)
+library(DT)
+library(data.table)
 
 
 # Define UI for application that draws a histogram
