@@ -14,7 +14,10 @@ fileInput('file1', 'Choose file to upload',
 accept = c('.csv')
 ),
 
-
+tags$style(type="text/css",
+".shiny-output-error { visibility: hidden; }",
+".shiny-output-error:before { visibility: hidden; }"
+),
 
 uiOutput('inApp'),
 
