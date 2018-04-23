@@ -2,7 +2,8 @@ name: TracerReportGen
 title:
 account: bleedrake
 server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
 appId: 150534
-bundleId: 676438
+bundleId: 1023731
 url: https://bleedrake.shinyapps.io/TracerReportGen/
-when: 1484170013.91356
+when: 1507832906.66139

@@ -30,8 +30,10 @@ tags$hr(),
 uiOutput('inName'),
 
 
+downloadButton(outputId="downloadcsv", label="CSV"),
 
-downloadButton(outputId="downloadtable", label="Download")
+downloadButton(outputId="downloadsheet", label="Spreadsheet")
+
 
 ),
 mainPanel(

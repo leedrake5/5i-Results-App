@@ -4,6 +4,7 @@ library(reshape2)
 library(pbapply)
 library(data.table)
 library(DT)
+library(openxlsx)
 
 options(warn=-1)
 assign("last.warning", NULL, envir = baseenv())
@@ -251,12 +252,20 @@ output$fullTable <- renderDataTable({
     data.table(data.m)
 })
 
-
-output$downloadtable <- downloadHandler(
+output$downloadcsv <- downloadHandler(
 filename = function() { paste(input$name, "_", input$app, ".csv", sep="") },
 content = function(file
 ) {
-    write.csv(metadataForm(), file)
+    write.csv(as.data.frame(metadataForm()), file)
+}
+)
+
+
+output$downloadsheet <- downloadHandler(
+filename = function() { paste(input$name, "_", input$app, ".xlsx", sep="") },
+content = function(file
+) {
+    write.xlsx(metadataForm(), file)
 }
 )
 
